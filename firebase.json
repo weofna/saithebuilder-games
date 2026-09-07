@@ -1,0 +1,17 @@
+{
+  "apphosting": {
+    "backendId": "games",
+    "rootDir": "/",
+    "ignore": [
+      "node_modules",
+      ".next",
+      ".git",
+      ".DS_Store",
+      ".env.local",
+      ".env.*.local",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "functions"
+    ]
+  }
+}
