@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Existing: Turito game scores ──────────────────────
+    match /scores/{scoreId} {
+      allow read: if true;
+
+      allow create, update: if
+        request.resource.data.score is number &&
+        request.resource.data.score >= 0 &&
+        request.resource.data.score < 100000000 &&
+        request.resource.data.userName is string &&
+        request.resource.data.userName.size() > 0 &&
+        request.resource.data.userName.size() <= 24 &&
+        request.resource.data.game is string &&
+        request.resource.data.userId is string &&
+        (
+          (
+            request.auth != null &&
+            request.auth.uid == request.resource.data.userId &&
+            scoreId == request.resource.data.game + '_' + request.auth.uid
+          )
+          ||
+          (
+            request.resource.data.userId.matches('^guest-.+') &&
+            scoreId == request.resource.data.game + '_' + request.resource.data.userId
+          )
+        );
+
+      allow delete: if false;
+    }
+
+    // ─── User profiles (Games site) ────────────────────────
+    match /users/{uid} {
+      allow read: if request.auth != null;
+
+      allow create, update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.handle is string
+        && request.resource.data.handle.matches('^[a-z0-9_]{3,20}$')
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0
+        && request.resource.data.displayName.size() <= 60;
+
+      allow delete: if false;
+
+      // Friend entries: readable by the owner; either party can create/delete
+      match /friends/{friendUid} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow create, update: if request.auth != null
+          && (request.auth.uid == uid || request.auth.uid == friendUid);
+        allow delete: if request.auth != null
+          && (request.auth.uid == uid || request.auth.uid == friendUid);
+      }
+
+      // Incoming friend requests: sender creates in target's inbox; target reads/deletes
+      match /incomingRequests/{fromUid} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null
+          && request.auth.uid == fromUid
+          && request.auth.uid != uid
+          && request.resource.data.from == fromUid;
+        allow delete: if request.auth != null
+          && (request.auth.uid == uid || request.auth.uid == fromUid);
+        allow update: if false;
+      }
+    }
+
+    // ─── Handle → uid mapping ──────────────────────────────
+    match /handles/{handle} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if request.auth != null
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+    }
+  }
+}

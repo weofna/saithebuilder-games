@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { FirebaseAnalytics } from "@/components/firebase-analytics";
+import { AuthProvider } from "@/lib/auth-context";
+import { Onboarding } from "@/components/auth/onboarding";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,10 +42,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <FirebaseAnalytics />
+          <AuthProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <Onboarding />
+            <FirebaseAnalytics />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

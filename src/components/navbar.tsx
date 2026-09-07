@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NavAuth } from "@/components/auth/nav-auth";
 import { projects } from "@/lib/projects";
 
 export function Navbar() {
@@ -89,12 +90,14 @@ export function Navbar() {
               </div>
             )}
           </div>
-          <div className="ml-2">
+          <div className="ml-2 flex items-center gap-2">
             <ThemeToggle />
+            <NavAuth />
           </div>
         </nav>
 
         <div className="flex items-center gap-2 md:hidden">
+          <NavAuth />
           <ThemeToggle />
           <button
             type="button"

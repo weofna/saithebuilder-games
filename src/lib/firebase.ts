@@ -1,15 +1,20 @@
 import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth, type Auth } from "firebase/auth";
+import { getFirestore, type Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC-_xvVIYEsv4wiilfk2Z6TovS2lzaBGAs",
-  authDomain: "games1-c664b.firebaseapp.com",
-  projectId: "games1-c664b",
-  storageBucket: "games1-c664b.firebasestorage.app",
-  messagingSenderId: "281575736561",
-  appId: "1:281575736561:web:7bc736705e996f7db55550",
-  measurementId: "G-RZM53DL95X",
+  apiKey: "AIzaSyCrz89ea5hamAolHVDaJBeuB5WtToLQ4sE",
+  authDomain: "saithebuilder.firebaseapp.com",
+  projectId: "saithebuilder",
+  storageBucket: "saithebuilder.firebasestorage.app",
+  messagingSenderId: "636049396468",
+  appId: "1:636049396468:web:9ec7a46e467725d4a504a1",
+  measurementId: "G-YY2WD7W1Q9",
 };
 
 export const firebaseApp: FirebaseApp = getApps().length
   ? getApp()
   : initializeApp(firebaseConfig);
+
+export const auth: Auth = getAuth(firebaseApp);
+export const db: Firestore = getFirestore(firebaseApp);
