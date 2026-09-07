@@ -163,7 +163,7 @@ export function UnoGame() {
         active={yourTurn}
         actions={
           <>
-            {state.drewThisTurn && (
+            {yourTurn && state.drewThisTurn && (
               <button
                 type="button"
                 onClick={() => dispatch({ type: "PASS" })}
