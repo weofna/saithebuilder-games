@@ -58,6 +58,8 @@ export function UnoGame() {
   );
   const canDraw = yourTurn && !state.drewThisTurn;
   const mustDraw = yourTurn && state.pendingDraw > 0;
+  const noPlays =
+    yourTurn && !state.drewThisTurn && state.pendingDraw === 0 && yourPlayable.size === 0;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:py-12">
@@ -105,14 +107,26 @@ export function UnoGame() {
               onClick={() => canDraw && dispatch({ type: "DRAW" })}
               disabled={!canDraw}
               aria-label="Draw a card"
-              className={`transition-transform ${
+              className={`rounded-xl transition-all ${
                 canDraw ? "cursor-pointer hover:-translate-y-1" : "opacity-60"
+              } ${
+                noPlays
+                  ? "animate-pulse ring-4 ring-emerald-500/60 ring-offset-4 ring-offset-background"
+                  : ""
               }`}
             >
               <CardView faceDown />
             </button>
-            <p className="text-xs text-muted-foreground">
-              Draw · {state.drawPile.length}
+            <p
+              className={`text-xs ${
+                noPlays
+                  ? "font-medium text-emerald-500"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {noPlays
+                ? `No plays — draw one (${state.drawPile.length})`
+                : `Draw · ${state.drawPile.length}`}
             </p>
           </div>
 
